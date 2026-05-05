@@ -31,7 +31,7 @@
     }
     .btn-print { background: #c0392b; color: white; }
     .btn-new { background: #2471a3; color: white; }
-    .btn-email { background: #27ae60; color: white; }
+    .btn-reset { background: #555; color: white; }
 
     .inv-counter { font-size: 0.68rem; color: #888; margin-bottom: 10px; text-align: center; letter-spacing: 1px; }
 
@@ -158,7 +158,6 @@
 <div class="app">
   <div class="toolbar">
     <button class="btn btn-print" onclick="window.print()">⎙ Print / PDF</button>
-    <button class="btn btn-email" onclick="sendEmail()">✉ Send Email</button>
     <button class="btn btn-new" onclick="newInvoice()">+ New Invoice</button>
     <button class="btn btn-reset" onclick="clearAll()">Clear All</button>
   </div>
@@ -209,8 +208,7 @@
     <table class="items-table">
       <thead>
         <tr>
-          <th style="width:110px;">Date</th>
-          <th>Description</th>
+          <th>Date / Description</th>
           <th>Order No:</th>
           <th class="price-col">Price</th>
           <th style="width:36px;border:none;background:transparent;"></th>
@@ -218,7 +216,7 @@
       </thead>
       <tbody id="items-body"></tbody>
       <tfoot>
-        <tr class="add-row"><td colspan="5"><button class="add-row-btn" onclick="addRow()">+ Add row</button></td></tr>
+        <tr class="add-row"><td colspan="4"><button class="add-row-btn" onclick="addRow()">+ Add row</button></td></tr>
       </tfoot>
     </table>
 
@@ -279,16 +277,15 @@
   }
 
   // --- Rows ---
-  function addRow(date='', desc='', orderNo='', price='') {
+  function addRow(desc='', orderNo='', price='') {
     const id = ++rowId;
     const tr = document.createElement('tr');
     tr.id = 'row-' + id;
     tr.innerHTML = `
-      <td style="vertical-align:top;"><input type="text" value="${date}" placeholder="" oninput="recalc()" style="min-height:38px;" /></td>
-      <td style="vertical-align:top;"><input type="text" value="${desc}" placeholder="" oninput="recalc()" style="min-height:38px;" /></td>
-      <td style="vertical-align:top;"><input type="text" value="${orderNo}" placeholder="" /></td>
-      <td class="price-cell" style="vertical-align:top;"><input type="number" value="${price}" placeholder="" step="0.01" oninput="recalc()" /></td>
-      <td style="border:none;background:transparent;padding:0;vertical-align:top;">
+      <td><input type="text" value="${desc}" placeholder="Date / Description" oninput="recalc()" /></td>
+      <td><input type="text" value="${orderNo}" placeholder="Order no." /></td>
+      <td class="price-cell"><input type="number" value="${price}" placeholder="0.00" step="0.01" oninput="recalc()" /></td>
+      <td style="border:none;background:transparent;padding:0;">
         <button class="remove-row-btn" onclick="removeRow(${id})">×</button>
       </td>
     `;
@@ -362,7 +359,7 @@
     document.getElementById('due-date').value = '';
     document.getElementById('received').value = '';
     document.getElementById('items-body').innerHTML = '';
-    addRow(); addRow(); addRow(); addRow(); addRow(); addRow();
+    addRow(); addRow(); addRow();
     updateCounter();
     recalc();
   }
@@ -384,55 +381,11 @@
     document.getElementById('due-date').value = '';
     document.getElementById('received').value = '';
     document.getElementById('items-body').innerHTML = '';
-    addRow(); addRow(); addRow(); addRow(); addRow(); addRow();
+    addRow(); addRow(); addRow();
     recalc();
   }
 
-  // --- Email ---
-  function sendEmail() {
-    const invNo = document.getElementById('inv-no').value;
-    const bizName = document.getElementById('biz-name').value || 'Us';
-    const clientEmail = document.getElementById('to-name').value || '';
-    const total = document.getElementById('total-val').textContent;
-    const due = document.getElementById('due-date').value;
-
-    document.getElementById('email-to').value = document.getElementById('to-abn').value || '';
-    document.getElementById('email-subject').value = `Tax Invoice ${invNo} from ${bizName}`;
-    document.getElementById('email-body').value =
-`Dear ${clientEmail || 'Client'},
-
-Please find attached Tax Invoice ${invNo} for ${total}${due ? ', due ' + due : ''}.
-
-Please make payment to the bank account details on the invoice.
-
-Thank you for your business.
-
-Kind regards,
-${bizName}
-${document.getElementById('biz-phone').value || ''}`;
-
-    const modal = document.getElementById('email-modal');
-    modal.style.display = 'flex';
-  }
-
-  function closeEmailModal() {
-    document.getElementById('email-modal').style.display = 'none';
-  }
-
-  function openMailto() {
-    const to = encodeURIComponent(document.getElementById('email-to').value);
-    const subject = encodeURIComponent(document.getElementById('email-subject').value);
-    const body = encodeURIComponent(document.getElementById('email-body').value);
-    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-    closeEmailModal();
-  }
-
-  // Close modal on backdrop click
-  document.getElementById('email-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeEmailModal();
-  });
-
-
+  // --- Auto-save biz on input ---
   ['biz-name','biz-addr1','biz-addr2','biz-phone','biz-abn','bank'].forEach(id => {
     document.getElementById(id).addEventListener('input', saveBiz);
   });
@@ -441,33 +394,9 @@ ${document.getElementById('biz-phone').value || ''}`;
   // --- INIT ---
   document.getElementById('inv-no').value = getCurrentNo();
   loadBiz();
-  addRow(); addRow(); addRow(); addRow(); addRow(); addRow();
+  addRow(); addRow(); addRow();
   updateCounter();
   recalc();
 </script>
-<!-- EMAIL MODAL -->
-<div id="email-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
-  <div style="background:white;border-radius:6px;padding:24px;width:90%;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
-    <h2 style="font-size:1rem;font-weight:700;margin-bottom:16px;color:#1a1a1a;">✉ Send Invoice by Email</h2>
-    <div style="margin-bottom:12px;">
-      <label style="font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;display:block;margin-bottom:4px;">To (client email)</label>
-      <input type="email" id="email-to" placeholder="client@email.com" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:3px;font-family:inherit;font-size:0.88rem;outline:none;" />
-    </div>
-    <div style="margin-bottom:12px;">
-      <label style="font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;display:block;margin-bottom:4px;">Subject</label>
-      <input type="text" id="email-subject" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:3px;font-family:inherit;font-size:0.88rem;outline:none;" />
-    </div>
-    <div style="margin-bottom:16px;">
-      <label style="font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;display:block;margin-bottom:4px;">Message</label>
-      <textarea id="email-body" rows="6" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:3px;font-family:inherit;font-size:0.85rem;outline:none;resize:vertical;"></textarea>
-    </div>
-    <p style="font-size:0.68rem;color:#aaa;margin-bottom:14px;">This will open your phone's email app with the details pre-filled. Tip: Print/Save as PDF first, then attach it to the email.</p>
-    <div style="display:flex;gap:10px;">
-      <button onclick="openMailto()" style="flex:1;background:#27ae60;color:white;border:none;padding:11px;border-radius:3px;font-family:inherit;font-size:0.8rem;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;">Open Email App</button>
-      <button onclick="closeEmailModal()" style="flex:1;background:#eee;color:#555;border:none;padding:11px;border-radius:3px;font-family:inherit;font-size:0.8rem;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;">Cancel</button>
-    </div>
-  </div>
-</div>
-
-
+</body>
 </html>
