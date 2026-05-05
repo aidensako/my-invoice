@@ -6,63 +6,41 @@
   <meta name="theme-color" content="#c0392b" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Tax Invoice" />
-  <title>Tax Invoice Generator</title>
+  <meta name="apple-mobile-web-app-title" content="Clean Invoice" />
+  <title>Clean Invoice</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23c0392b'/%3E%3Ctext y='78' x='50' text-anchor='middle' font-size='62'%3E%F0%9F%A7%B9%3C/text%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23c0392b'/%3E%3Ctext y='78' x='50' text-anchor='middle' font-size='62'%3E%F0%9F%A7%B9%3C/text%3E%3C/svg%3E" />
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Source Sans 3', sans-serif; background: #d0d0d0; font-size: 14px; }
-
     .app { min-height: 100vh; padding: 16px 10px 60px; display: flex; flex-direction: column; align-items: center; }
 
+    /* TOOLBAR */
     .toolbar { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 720px; }
-    .btn {
-      font-family: 'Source Sans 3', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 10px 16px;
-      border-radius: 3px;
-      cursor: pointer;
-      border: none;
-      flex: 1;
-      min-width: 100px;
-    }
-    .btn-print { background: #c0392b; color: white; }
-    .btn-new { background: #2471a3; color: white; }
-    .btn-reset { background: #555; color: white; }
-
+    .btn { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 10px 14px; border-radius: 3px; cursor: pointer; border: none; flex: 1; min-width: 90px; }
+    .btn-print   { background: #c0392b; color: white; }
+    .btn-email   { background: #27ae60; color: white; }
+    .btn-new     { background: #2471a3; color: white; }
+    .btn-history { background: #7d3c98; color: white; }
+    .btn-reset   { background: #555;    color: white; }
     .inv-counter { font-size: 0.68rem; color: #888; margin-bottom: 10px; text-align: center; letter-spacing: 1px; }
 
     /* INVOICE */
-    .invoice-wrap {
-      width: 100%;
-      max-width: 720px;
-      background: #f0ece5;
-      border: 1px solid #bbb;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-      font-size: 0.85rem;
-    }
+    .invoice-wrap { width: 100%; max-width: 720px; background: #f0ece5; border: 1px solid #bbb; box-shadow: 0 4px 24px rgba(0,0,0,0.18); font-size: 0.85rem; }
 
-    /* EDITABLE INPUT */
+    /* INPUTS */
     input[type=text], input[type=number], input[type=tel] {
-      border: none;
-      outline: none;
-      background: transparent;
-      font-family: 'Source Sans 3', sans-serif;
-      font-size: inherit;
-      color: inherit;
-      width: 100%;
-      padding: 2px 0;
-      -webkit-appearance: none;
+      border: none; outline: none; background: transparent;
+      font-family: 'Source Sans 3', sans-serif; font-size: inherit;
+      color: inherit; width: 100%; padding: 2px 0; -webkit-appearance: none;
     }
     input:focus { background: rgba(255,255,100,0.3); border-radius: 2px; }
     input[type=number] { -moz-appearance: textfield; }
     input[type=number]::-webkit-outer-spin-button,
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
 
-    /* HEADER BAND */
+    /* HEADER */
     .header-band { background: #e8e2d8; border-bottom: 2px solid #aaa; padding: 12px 14px 10px; }
     .header-tagline { font-size: 0.65rem; color: #888; text-align: right; margin-bottom: 8px; font-style: italic; }
     .header-grid { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; }
@@ -71,14 +49,7 @@
     .hvalue input { font-size: 0.8rem; }
 
     /* TITLE ROW */
-    .title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      background: #f0ece5;
-      border-bottom: 1px solid #ccc;
-    }
+    .title-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f0ece5; border-bottom: 1px solid #ccc; }
     .tax-invoice-title { font-size: 1.2rem; font-weight: 700; color: #1a1a1a; }
     .invoice-no-block { display: flex; align-items: center; gap: 6px; }
     .invoice-no-label { font-size: 0.75rem; font-weight: 600; color: #555; white-space: nowrap; }
@@ -93,36 +64,21 @@
 
     /* ITEMS TABLE */
     .items-table { width: 100%; border-collapse: collapse; }
-    .items-table th {
-      background: #ddd8ce;
-      font-weight: 700;
-      font-size: 0.75rem;
-      padding: 7px 8px;
-      border: 1px solid #bbb;
-      text-align: left;
-    }
+    .items-table th { background: #ddd8ce; font-weight: 700; font-size: 0.75rem; padding: 7px 8px; border: 1px solid #bbb; text-align: left; }
     .items-table th.price-col { text-align: right; width: 80px; }
     .items-table td { border: 1px solid #ccc; padding: 0; vertical-align: middle; }
-    .items-table td input { padding: 8px 8px; font-size: 0.82rem; min-height: 36px; }
+    .items-table td input { padding: 8px; font-size: 0.82rem; min-height: 36px; }
     .items-table td.price-cell input { text-align: right; }
     .add-row td { padding: 5px 8px; background: #e8e2d8; border: none; }
-    .add-row-btn {
-      background: none; border: 1px dashed #aaa; border-radius: 2px;
-      font-size: 0.75rem; color: #888; cursor: pointer; padding: 5px 14px;
-      font-family: inherit; width: 100%;
-    }
-    .remove-row-btn {
-      background: none; border: none; color: #bbb; cursor: pointer;
-      font-size: 1.2rem; padding: 0 8px; line-height: 1; display: block; width: 100%; text-align: center;
-    }
+    .add-row-btn { background: none; border: 1px dashed #aaa; border-radius: 2px; font-size: 0.75rem; color: #888; cursor: pointer; padding: 5px 14px; font-family: inherit; width: 100%; }
+    .remove-row-btn { background: none; border: none; color: #bbb; cursor: pointer; font-size: 1.2rem; padding: 0 8px; line-height: 1; display: block; width: 100%; text-align: center; }
 
     /* BANK + TOTALS */
     .bank-totals { display: grid; grid-template-columns: 1fr auto; border-top: 2px solid #aaa; background: #f0ece5; }
-    .bank-section { padding: 10px 10px; border-right: 1px solid #ccc; }
+    .bank-section { padding: 10px; border-right: 1px solid #ccc; }
     .bank-label { font-weight: 700; font-size: 0.75rem; margin-bottom: 5px; }
     .bank-input { font-size: 0.8rem; width: 100%; border: none; background: transparent; outline: none; font-family: inherit; border-bottom: 1px dashed #aaa; padding-bottom: 2px; }
     .bank-input:focus { background: rgba(255,255,100,0.3); }
-
     .totals-section { min-width: 160px; }
     .total-row-grid { display: grid; grid-template-columns: 1fr auto; border-bottom: 1px solid #ccc; align-items: center; }
     .total-row-grid:last-child { border-bottom: none; }
@@ -133,7 +89,7 @@
     .gst-input { font-size: 0.82rem; text-align: right; width: 70px; border: none; background: transparent; outline: none; font-family: inherit; }
     .gst-input:focus { background: rgba(255,255,100,0.3); }
 
-    /* DUE ROW */
+    /* DUE DATE */
     .due-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid #aaa; background: #e8e2d8; }
     .due-cell { padding: 8px 10px; display: flex; gap: 6px; align-items: center; border-right: 1px solid #ccc; font-size: 0.8rem; flex-wrap: wrap; }
     .due-cell:last-child { border-right: none; }
@@ -145,9 +101,35 @@
     .fine-print p { font-size: 0.65rem; color: #555; line-height: 1.5; margin-bottom: 5px; }
     .fine-print .asterisk-note { font-style: italic; text-align: center; }
 
+    /* MODALS */
+    .modal-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px 10px; }
+    .modal-box { background: white; border-radius: 6px; width: 100%; max-width: 460px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); margin: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #eee; }
+    .modal-header h2 { font-size: 1rem; font-weight: 700; color: #1a1a1a; }
+    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #aaa; line-height: 1; }
+    .modal-body { padding: 16px 20px; }
+    .modal-field { margin-bottom: 12px; }
+    .modal-field label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .modal-field input, .modal-field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 3px; font-family: inherit; font-size: 0.88rem; outline: none; }
+    .modal-field textarea { resize: vertical; }
+    .modal-note { font-size: 0.68rem; color: #aaa; margin-bottom: 14px; line-height: 1.5; }
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-btn { flex: 1; border: none; padding: 11px; border-radius: 3px; font-family: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* HISTORY */
+    .history-list { padding: 12px 16px; max-height: 65vh; overflow-y: auto; }
+    .history-card { border: 1px solid #eee; border-radius: 4px; padding: 14px; margin-bottom: 10px; background: #fafafa; }
+    .history-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .history-inv-no { font-weight: 700; color: #c0392b; font-size: 1rem; }
+    .history-date { font-size: 0.7rem; color: #aaa; margin-left: 8px; }
+    .history-detail { font-size: 0.82rem; color: #555; margin-bottom: 3px; }
+    .history-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .history-btn { flex: 1; border: none; padding: 8px; border-radius: 3px; font-family: inherit; font-size: 0.72rem; font-weight: 700; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; color: white; }
+    .del-btn { background: none; border: none; color: #ddd; font-size: 1rem; cursor: pointer; padding: 0; }
+
     @media print {
       body { background: white; }
-      .toolbar, .inv-counter { display: none; }
+      .toolbar, .inv-counter, .modal-bg { display: none !important; }
       .app { padding: 0; }
       .invoice-wrap { box-shadow: none; border: none; max-width: 100%; font-size: 12px; }
       input:focus { background: transparent !important; }
@@ -155,15 +137,19 @@
   </style>
 </head>
 <body>
+
 <div class="app">
   <div class="toolbar">
-    <button class="btn btn-print" onclick="window.print()">⎙ Print / PDF</button>
-    <button class="btn btn-new" onclick="newInvoice()">+ New Invoice</button>
-    <button class="btn btn-reset" onclick="clearAll()">Clear All</button>
+    <button class="btn btn-print"   onclick="window.print()">⎙ Print / PDF</button>
+    <button class="btn btn-email"   onclick="openEmailModal()">✉ Email</button>
+    <button class="btn btn-new"     onclick="saveAndNew()">+ New</button>
+    <button class="btn btn-history" onclick="openHistory()">📋 Past</button>
+    <button class="btn btn-reset"   onclick="clearAll()">Clear</button>
   </div>
   <div class="inv-counter" id="inv-counter"></div>
 
   <div class="invoice-wrap">
+
     <!-- HEADER -->
     <div class="header-band">
       <div class="header-tagline">caring for your workplace and the environment</div>
@@ -181,16 +167,18 @@
       </div>
     </div>
 
-    <!-- TITLE ROW -->
+    <!-- TITLE + INVOICE NO -->
     <div class="title-row">
       <div class="tax-invoice-title">TAX INVOICE</div>
       <div class="invoice-no-block">
         <div class="invoice-no-label">Invoice No:</div>
-        <div class="invoice-no-val"><input type="text" id="inv-no" style="font-size:1.3rem;font-weight:700;color:#c0392b;width:110px;text-align:right;" /></div>
+        <div class="invoice-no-val">
+          <input type="text" id="inv-no" oninput="updateCounter()" />
+        </div>
       </div>
     </div>
 
-    <!-- TO SECTION -->
+    <!-- TO -->
     <div class="to-section">
       <div class="to-grid">
         <div class="to-label">To:</div>
@@ -208,15 +196,18 @@
     <table class="items-table">
       <thead>
         <tr>
-          <th>Date / Description</th>
-          <th>Order No:</th>
+          <th style="width:110px;">Date</th>
+          <th>Description</th>
+          <th style="width:90px;">Order No:</th>
           <th class="price-col">Price</th>
-          <th style="width:36px;border:none;background:transparent;"></th>
+          <th style="width:36px; border:none; background:transparent;"></th>
         </tr>
       </thead>
       <tbody id="items-body"></tbody>
       <tfoot>
-        <tr class="add-row"><td colspan="4"><button class="add-row-btn" onclick="addRow()">+ Add row</button></td></tr>
+        <tr class="add-row">
+          <td colspan="5"><button class="add-row-btn" onclick="addRow()">+ Add row</button></td>
+        </tr>
       </tfoot>
     </table>
 
@@ -233,7 +224,9 @@
         </div>
         <div class="total-row-grid">
           <div class="total-label">GST</div>
-          <div class="total-val"><input type="number" class="gst-input" id="gst-input" placeholder="0.00" oninput="recalc()" /></div>
+          <div class="total-val">
+            <input type="number" class="gst-input" id="gst-input" placeholder="0.00" oninput="recalc()" />
+          </div>
         </div>
         <div class="total-row-grid">
           <div class="total-label grand">TOTAL</div>
@@ -242,7 +235,7 @@
       </div>
     </div>
 
-    <!-- DUE DATE ROW -->
+    <!-- DUE DATE -->
     <div class="due-row">
       <div class="due-cell"><b>Due Date:</b><input type="text" id="due-date" placeholder="dd/mm/yyyy" /></div>
       <div class="due-cell"><b>Received on:</b><input type="text" id="received" placeholder="dd/mm/yyyy" /></div>
@@ -253,104 +246,174 @@
       <p>All costs and expenses incurred as a result of late or non payment of this invoice shall be payable by you. Any invoice not paid by the due date as shown on this invoice may, at our discretion, incur a $25 per month or 12.5% financing charge, whichever is the greater.</p>
       <p class="asterisk-note">* Cleantastic Franchisees are independent owner-operators.</p>
     </div>
+
   </div>
 </div>
 
+
+<!-- ===== PAST INVOICES MODAL ===== -->
+<div class="modal-bg" id="history-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>📋 Past Invoices</h2>
+      <button class="modal-close" onclick="closeHistory()">×</button>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+</div>
+
+
+<!-- ===== EMAIL MODAL ===== -->
+<div class="modal-bg" id="email-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>✉ Send Invoice by Email</h2>
+      <button class="modal-close" onclick="closeEmailModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label>To (client email)</label>
+        <input type="email" id="email-to" placeholder="client@email.com" />
+      </div>
+      <div class="modal-field">
+        <label>Subject</label>
+        <input type="text" id="email-subject" />
+      </div>
+      <div class="modal-field">
+        <label>Message</label>
+        <textarea id="email-body" rows="6"></textarea>
+      </div>
+      <p class="modal-note">Opens your phone's email app with details pre-filled. Tip: Print/Save as PDF first, then attach it to the email.</p>
+      <div class="modal-btns">
+        <button class="modal-btn" style="background:#27ae60;color:white;" onclick="openMailto()">Open Email App</button>
+        <button class="modal-btn" style="background:#eee;color:#555;"     onclick="closeEmailModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
-  const STORAGE_KEY = 'tax_inv_counter';
-  const BIZ_KEY = 'tax_inv_biz';
+  const COUNTER_KEY = 'tax_inv_counter';
+  const BIZ_KEY     = 'tax_inv_biz';
+  const HISTORY_KEY = 'inv_history';
   let rowId = 0;
 
-  // --- Invoice number ---
-  function getCurrentNo() {
-    return localStorage.getItem(STORAGE_KEY) || '218246';
-  }
+  /* ---- INVOICE NUMBER ---- */
+  function getCurrentNo() { return localStorage.getItem(COUNTER_KEY) || '218246'; }
   function getNextNo() {
-    const cur = parseInt(localStorage.getItem(STORAGE_KEY) || '218246');
-    const next = cur + 1;
-    localStorage.setItem(STORAGE_KEY, String(next));
+    const next = parseInt(localStorage.getItem(COUNTER_KEY) || '218246') + 1;
+    localStorage.setItem(COUNTER_KEY, String(next));
     return String(next);
   }
   function updateCounter() {
     document.getElementById('inv-counter').textContent =
-      'Invoice #' + document.getElementById('inv-no').value + ' · auto-increments on New Invoice';
+      'Invoice #' + document.getElementById('inv-no').value + '  ·  auto-increments on New Invoice';
   }
 
-  // --- Rows ---
-  function addRow(desc='', orderNo='', price='') {
+  /* ---- ROWS ---- */
+  function addRow(date, desc, orderNo, price) {
+    date = date || ''; desc = desc || ''; orderNo = orderNo || ''; price = price || '';
     const id = ++rowId;
     const tr = document.createElement('tr');
     tr.id = 'row-' + id;
-    tr.innerHTML = `
-      <td><input type="text" value="${desc}" placeholder="Date / Description" oninput="recalc()" /></td>
-      <td><input type="text" value="${orderNo}" placeholder="Order no." /></td>
-      <td class="price-cell"><input type="number" value="${price}" placeholder="0.00" step="0.01" oninput="recalc()" /></td>
-      <td style="border:none;background:transparent;padding:0;">
-        <button class="remove-row-btn" onclick="removeRow(${id})">×</button>
-      </td>
-    `;
+    tr.innerHTML =
+      '<td><input type="text" oninput="recalc()" style="min-height:36px;" /></td>' +
+      '<td><input type="text" oninput="recalc()" style="min-height:36px;" /></td>' +
+      '<td><input type="text" style="min-height:36px;" /></td>' +
+      '<td class="price-cell"><input type="number" step="0.01" oninput="recalc()" style="min-height:36px;" /></td>' +
+      '<td style="border:none;background:transparent;padding:0;">' +
+        '<button class="remove-row-btn" onclick="removeRow(' + id + ')">×</button>' +
+      '</td>';
     document.getElementById('items-body').appendChild(tr);
+    const inputs = tr.querySelectorAll('input');
+    inputs[0].value = date;
+    inputs[1].value = desc;
+    inputs[2].value = orderNo;
+    inputs[3].value = price;
     recalc();
   }
 
   function removeRow(id) {
     const el = document.getElementById('row-' + id);
-    if (el) el.remove();
-    recalc();
+    if (el) { el.remove(); recalc(); }
   }
 
-  // --- Recalculate totals ---
+  /* ---- CALCULATE ---- */
+  function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function recalc() {
-    const rows = document.querySelectorAll('#items-body tr');
     let subtotal = 0;
-    rows.forEach(row => {
-      const priceInput = row.querySelector('td.price-cell input');
-      if (priceInput) subtotal += parseFloat(priceInput.value) || 0;
+    document.querySelectorAll('#items-body td.price-cell input').forEach(function(inp) {
+      subtotal += parseFloat(inp.value) || 0;
     });
-    const gstInput = document.getElementById('gst-input');
-    const gst = gstInput.value !== '' ? (parseFloat(gstInput.value) || 0) : subtotal * 0.1;
-    if (gstInput.value === '') gstInput.placeholder = gst > 0 ? gst.toFixed(2) : '0.00';
-    const total = subtotal + gst;
+    const gstInp = document.getElementById('gst-input');
+    const gst = gstInp.value !== '' ? (parseFloat(gstInp.value) || 0) : subtotal * 0.1;
+    gstInp.placeholder = gst > 0 ? gst.toFixed(2) : '0.00';
     document.getElementById('subtotal-val').textContent = fmt(subtotal);
-    document.getElementById('total-val').textContent = fmt(total);
+    document.getElementById('total-val').textContent    = fmt(subtotal + gst);
     saveBiz();
   }
 
-  function fmt(n) {
-    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
-
-  // --- Save/load business info ---
+  /* ---- BIZ INFO ---- */
   function saveBiz() {
     try {
-      const biz = {
-        name: document.getElementById('biz-name').value,
+      localStorage.setItem(BIZ_KEY, JSON.stringify({
+        name:  document.getElementById('biz-name').value,
         addr1: document.getElementById('biz-addr1').value,
         addr2: document.getElementById('biz-addr2').value,
         phone: document.getElementById('biz-phone').value,
-        abn: document.getElementById('biz-abn').value,
-        bank: document.getElementById('bank').value,
-      };
-      localStorage.setItem(BIZ_KEY, JSON.stringify(biz));
-    } catch(e){}
+        abn:   document.getElementById('biz-abn').value,
+        bank:  document.getElementById('bank').value,
+      }));
+    } catch(e) {}
   }
-
   function loadBiz() {
     try {
-      const biz = JSON.parse(localStorage.getItem(BIZ_KEY) || '{}');
-      if (biz.name) document.getElementById('biz-name').value = biz.name;
-      if (biz.addr1) document.getElementById('biz-addr1').value = biz.addr1;
-      if (biz.addr2) document.getElementById('biz-addr2').value = biz.addr2;
-      if (biz.phone) document.getElementById('biz-phone').value = biz.phone;
-      if (biz.abn) document.getElementById('biz-abn').value = biz.abn;
-      if (biz.bank) document.getElementById('bank').value = biz.bank;
-    } catch(e){}
+      var b = JSON.parse(localStorage.getItem(BIZ_KEY) || '{}');
+      if (b.name)  document.getElementById('biz-name').value  = b.name;
+      if (b.addr1) document.getElementById('biz-addr1').value = b.addr1;
+      if (b.addr2) document.getElementById('biz-addr2').value = b.addr2;
+      if (b.phone) document.getElementById('biz-phone').value = b.phone;
+      if (b.abn)   document.getElementById('biz-abn').value   = b.abn;
+      if (b.bank)  document.getElementById('bank').value      = b.bank;
+    } catch(e) {}
   }
 
-  // --- New Invoice ---
-  function newInvoice() {
-    const newNo = getNextNo();
-    document.getElementById('inv-no').value = newNo;
+  /* ---- SNAPSHOT ---- */
+  function getSnapshot() {
+    var rows = [];
+    document.querySelectorAll('#items-body tr').forEach(function(tr) {
+      var inp = tr.querySelectorAll('input');
+      if (inp.length >= 4) rows.push({ date: inp[0].value, desc: inp[1].value, orderNo: inp[2].value, price: inp[3].value });
+    });
+    return {
+      invNo: document.getElementById('inv-no').value,
+      toName: document.getElementById('to-name').value,
+      toAddr1: document.getElementById('to-addr1').value,
+      toAddr2: document.getElementById('to-addr2').value,
+      toAbn: document.getElementById('to-abn').value,
+      gst: document.getElementById('gst-input').value,
+      dueDate: document.getElementById('due-date').value,
+      received: document.getElementById('received').value,
+      subtotal: document.getElementById('subtotal-val').textContent,
+      total: document.getElementById('total-val').textContent,
+      rows: rows,
+      savedAt: new Date().toLocaleDateString('en-AU'),
+    };
+  }
+  function saveCurrentInvoice() {
+    try {
+      var snap = getSnapshot();
+      if (!snap.toName && snap.rows.every(function(r) { return !r.desc && !r.price; })) return;
+      var all = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      var idx = all.findIndex(function(i) { return i.invNo === snap.invNo; });
+      if (idx >= 0) all[idx] = snap; else all.unshift(snap);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(all.slice(0, 50)));
+    } catch(e) {}
+  }
+
+  /* ---- NEW INVOICE ---- */
+  function clearForm() {
     document.getElementById('to-name').value = '';
     document.getElementById('to-addr1').value = '';
     document.getElementById('to-addr2').value = '';
@@ -359,44 +422,120 @@
     document.getElementById('due-date').value = '';
     document.getElementById('received').value = '';
     document.getElementById('items-body').innerHTML = '';
-    addRow(); addRow(); addRow();
-    updateCounter();
+    for (var i = 0; i < 6; i++) addRow();
     recalc();
   }
+  function newInvoice() {
+    document.getElementById('inv-no').value = getNextNo();
+    clearForm();
+    updateCounter();
+  }
+  function saveAndNew() { saveCurrentInvoice(); newInvoice(); }
 
-  // --- Clear All ---
+  /* ---- CLEAR ALL ---- */
   function clearAll() {
     if (!confirm('Clear everything including your business details?')) return;
-    document.getElementById('biz-name').value = '';
-    document.getElementById('biz-addr1').value = '';
-    document.getElementById('biz-addr2').value = '';
-    document.getElementById('biz-phone').value = '';
-    document.getElementById('biz-abn').value = '';
-    document.getElementById('bank').value = '';
-    document.getElementById('to-name').value = '';
-    document.getElementById('to-addr1').value = '';
-    document.getElementById('to-addr2').value = '';
-    document.getElementById('to-abn').value = '';
-    document.getElementById('gst-input').value = '';
-    document.getElementById('due-date').value = '';
-    document.getElementById('received').value = '';
-    document.getElementById('items-body').innerHTML = '';
-    addRow(); addRow(); addRow();
-    recalc();
+    ['biz-name','biz-addr1','biz-addr2','biz-phone','biz-abn','bank'].forEach(function(id) {
+      document.getElementById(id).value = '';
+    });
+    clearForm();
   }
 
-  // --- Auto-save biz on input ---
-  ['biz-name','biz-addr1','biz-addr2','biz-phone','biz-abn','bank'].forEach(id => {
+  /* ---- HISTORY ---- */
+  function openHistory() {
+    var all = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    var list = document.getElementById('history-list');
+    if (all.length === 0) {
+      list.innerHTML = '<p style="color:#aaa;text-align:center;padding:30px;font-size:0.85rem;">No saved invoices yet.<br>Tap &quot;+ New&quot; to save the current one first.</p>';
+    } else {
+      list.innerHTML = all.map(function(inv, i) {
+        return '<div class="history-card">' +
+          '<div class="history-card-top">' +
+            '<div><span class="history-inv-no">Invoice #' + inv.invNo + '</span>' +
+            '<span class="history-date">' + (inv.savedAt || '') + '</span></div>' +
+            '<button class="del-btn" onclick="deleteInvoice(' + i + ')" title="Delete">🗑</button>' +
+          '</div>' +
+          '<div class="history-detail"><b>To:</b> ' + (inv.toName || '—') + '</div>' +
+          '<div class="history-detail"><b>Total:</b> ' + inv.total + ' &nbsp;|&nbsp; <b>Due:</b> ' + (inv.dueDate || '—') + '</div>' +
+          '<div class="history-actions">' +
+            '<button class="history-btn" style="background:#2471a3;" onclick="loadInvoice(' + i + ')">Load</button>' +
+            '<button class="history-btn" style="background:#c0392b;" onclick="printInvoice(' + i + ')">Print</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+    document.getElementById('history-modal').style.display = 'flex';
+  }
+  function closeHistory() { document.getElementById('history-modal').style.display = 'none'; }
+
+  function loadInvoice(i) {
+    var all = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    var inv = all[i]; if (!inv) return;
+    document.getElementById('inv-no').value    = inv.invNo   || '';
+    document.getElementById('to-name').value   = inv.toName  || '';
+    document.getElementById('to-addr1').value  = inv.toAddr1 || '';
+    document.getElementById('to-addr2').value  = inv.toAddr2 || '';
+    document.getElementById('to-abn').value    = inv.toAbn   || '';
+    document.getElementById('gst-input').value = inv.gst     || '';
+    document.getElementById('due-date').value  = inv.dueDate || '';
+    document.getElementById('received').value  = inv.received|| '';
+    document.getElementById('items-body').innerHTML = '';
+    (inv.rows || []).forEach(function(r) { addRow(r.date, r.desc, r.orderNo, r.price); });
+    while (document.querySelectorAll('#items-body tr').length < 3) addRow();
+    updateCounter(); recalc(); closeHistory();
+  }
+  function deleteInvoice(i) {
+    if (!confirm('Delete this invoice from history?')) return;
+    var all = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    all.splice(i, 1);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(all));
+    openHistory();
+  }
+  function printInvoice(i) { loadInvoice(i); setTimeout(function() { window.print(); }, 500); }
+
+  /* ---- EMAIL ---- */
+  function openEmailModal() {
+    var invNo   = document.getElementById('inv-no').value;
+    var bizName = document.getElementById('biz-name').value || 'Us';
+    var client  = document.getElementById('to-name').value  || 'Client';
+    var total   = document.getElementById('total-val').textContent;
+    var due     = document.getElementById('due-date').value;
+    var phone   = document.getElementById('biz-phone').value;
+    document.getElementById('email-to').value      = '';
+    document.getElementById('email-subject').value = 'Tax Invoice ' + invNo + ' from ' + bizName;
+    document.getElementById('email-body').value    =
+      'Dear ' + client + ',\n\n' +
+      'Please find attached Tax Invoice ' + invNo + ' for ' + total + (due ? ', due ' + due : '') + '.\n\n' +
+      'Please make payment to the bank account details shown on the invoice.\n\n' +
+      'Thank you for your business.\n\n' +
+      'Kind regards,\n' + bizName + (phone ? '\n' + phone : '');
+    document.getElementById('email-modal').style.display = 'flex';
+  }
+  function closeEmailModal() { document.getElementById('email-modal').style.display = 'none'; }
+  function openMailto() {
+    var to      = encodeURIComponent(document.getElementById('email-to').value);
+    var subject = encodeURIComponent(document.getElementById('email-subject').value);
+    var body    = encodeURIComponent(document.getElementById('email-body').value);
+    window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+    closeEmailModal();
+  }
+
+  /* ---- MODAL BACKDROP CLOSE ---- */
+  document.getElementById('history-modal').addEventListener('click', function(e) { if (e.target === this) closeHistory(); });
+  document.getElementById('email-modal').addEventListener('click',   function(e) { if (e.target === this) closeEmailModal(); });
+
+  /* ---- AUTO-SAVE BIZ ---- */
+  ['biz-name','biz-addr1','biz-addr2','biz-phone','biz-abn','bank'].forEach(function(id) {
     document.getElementById(id).addEventListener('input', saveBiz);
   });
-  document.getElementById('inv-no').addEventListener('input', updateCounter);
 
-  // --- INIT ---
+  /* ---- INIT ---- */
   document.getElementById('inv-no').value = getCurrentNo();
   loadBiz();
-  addRow(); addRow(); addRow();
+  for (var i = 0; i < 6; i++) addRow();
   updateCounter();
   recalc();
 </script>
+
 </body>
 </html>
