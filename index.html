@@ -300,9 +300,9 @@
   let rowId = 0;
 
   /* ---- INVOICE NUMBER ---- */
-  function getCurrentNo() { return localStorage.getItem(COUNTER_KEY) || '218246'; }
+  function getCurrentNo() { return localStorage.getItem(COUNTER_KEY) || '230000'; }
   function getNextNo() {
-    const next = parseInt(localStorage.getItem(COUNTER_KEY) || '218246') + 1;
+    const next = parseInt(localStorage.getItem(COUNTER_KEY) || '230000') + 1;
     localStorage.setItem(COUNTER_KEY, String(next));
     return String(next);
   }
