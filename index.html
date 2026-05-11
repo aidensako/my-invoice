@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Clean Invoice" />
-  <title>Clean Invoice</title>
+  <title>Clean Invoice v8</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23c0392b'/%3E%3Ctext y='78' x='50' text-anchor='middle' font-size='62'%3E%F0%9F%A7%B9%3C/text%3E%3C/svg%3E" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23c0392b'/%3E%3Ctext y='78' x='50' text-anchor='middle' font-size='62'%3E%F0%9F%A7%B9%3C/text%3E%3C/svg%3E" />
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -16,7 +16,6 @@
     body { font-family: 'Source Sans 3', sans-serif; background: #d0d0d0; font-size: 14px; }
     .app { min-height: 100vh; padding: 16px 10px 60px; display: flex; flex-direction: column; align-items: center; }
 
-    /* TOOLBAR */
     .toolbar { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 720px; }
     .btn { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 10px 14px; border-radius: 3px; cursor: pointer; border: none; flex: 1; min-width: 90px; }
     .btn-print   { background: #c0392b; color: white; }
@@ -24,13 +23,13 @@
     .btn-new     { background: #2471a3; color: white; }
     .btn-history { background: #7d3c98; color: white; }
     .btn-reset   { background: #555;    color: white; }
-    .inv-counter { font-size: 0.68rem; color: #888; margin-bottom: 10px; text-align: center; letter-spacing: 1px; }
 
-    /* INVOICE */
+    .inv-counter { font-size: 0.68rem; color: #888; margin-bottom: 4px; text-align: center; letter-spacing: 1px; }
+    .version-tag { font-size: 0.65rem; color: #bbb; text-align: center; margin-bottom: 10px; }
+
     .invoice-wrap { width: 100%; max-width: 720px; background: #f0ece5; border: 1px solid #bbb; box-shadow: 0 4px 24px rgba(0,0,0,0.18); font-size: 0.85rem; }
 
-    /* INPUTS */
-    input[type=text], input[type=number], input[type=tel] {
+    input[type=text], input[type=number], input[type=tel], input[type=date] {
       border: none; outline: none; background: transparent;
       font-family: 'Source Sans 3', sans-serif; font-size: inherit;
       color: inherit; width: 100%; padding: 2px 0; -webkit-appearance: none;
@@ -39,8 +38,8 @@
     input[type=number] { -moz-appearance: textfield; }
     input[type=number]::-webkit-outer-spin-button,
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    input[type=date] { cursor: pointer; }
 
-    /* HEADER */
     .header-band { background: #e8e2d8; border-bottom: 2px solid #aaa; padding: 12px 14px 10px; }
     .header-tagline { font-size: 0.65rem; color: #888; text-align: right; margin-bottom: 8px; font-style: italic; }
     .header-grid { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; }
@@ -48,33 +47,31 @@
     .hvalue { border-bottom: 1px dashed #aaa; padding: 2px 0; }
     .hvalue input { font-size: 0.8rem; }
 
-    /* TITLE ROW */
     .title-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f0ece5; border-bottom: 1px solid #ccc; }
     .tax-invoice-title { font-size: 1.2rem; font-weight: 700; color: #1a1a1a; }
     .invoice-no-block { display: flex; align-items: center; gap: 6px; }
     .invoice-no-label { font-size: 0.75rem; font-weight: 600; color: #555; white-space: nowrap; }
     .invoice-no-val input { font-size: 1.3rem; font-weight: 700; color: #c0392b; width: 110px; text-align: right; }
 
-    /* TO SECTION */
     .to-section { padding: 10px 14px 12px; background: #f0ece5; border-bottom: 1px solid #ccc; }
     .to-grid { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; }
     .to-label { font-weight: 700; font-size: 0.8rem; white-space: nowrap; padding: 3px 0; align-self: center; }
     .to-value { border-bottom: 1px dashed #aaa; padding: 2px 0; }
     .to-value input { font-size: 0.8rem; }
 
-    /* ITEMS TABLE */
     .items-table { width: 100%; border-collapse: collapse; }
     .items-table th { background: #ddd8ce; font-weight: 700; font-size: 0.75rem; padding: 7px 8px; border: 1px solid #bbb; text-align: left; }
-    .items-table th.price-col { text-align: right; width: 80px; }
+    .items-table th.price-col { text-align: right; width: 90px; }
     .items-table td { border: 1px solid #ccc; padding: 0; vertical-align: middle; }
-    .items-table td input { padding: 8px; font-size: 0.82rem; min-height: 36px; }
-    .items-table td input[type=date] { padding: 6px 4px; font-size: 0.78rem; cursor: pointer; }
-    .items-table td.price-cell input { text-align: right; }
+    .items-table td input[type=date] { padding: 8px 4px; font-size: 0.8rem; min-height: 36px; }
+    .items-table td input[type=number] { padding: 8px; font-size: 0.82rem; min-height: 36px; text-align: right; }
+    .items-table td input[type=text] { padding: 8px; font-size: 0.82rem; min-height: 36px; }
+    .notes-row td { background: #f8f5f0; }
+    .notes-row td input { font-size: 0.78rem; color: #888; font-style: italic; }
     .add-row td { padding: 5px 8px; background: #e8e2d8; border: none; }
     .add-row-btn { background: none; border: 1px dashed #aaa; border-radius: 2px; font-size: 0.75rem; color: #888; cursor: pointer; padding: 5px 14px; font-family: inherit; width: 100%; }
     .remove-row-btn { background: none; border: none; color: #bbb; cursor: pointer; font-size: 1.2rem; padding: 0 8px; line-height: 1; display: block; width: 100%; text-align: center; }
 
-    /* BANK + TOTALS */
     .bank-totals { display: grid; grid-template-columns: 1fr auto; border-top: 2px solid #aaa; background: #f0ece5; }
     .bank-section { padding: 10px; border-right: 1px solid #ccc; }
     .bank-label { font-weight: 700; font-size: 0.75rem; margin-bottom: 5px; }
@@ -88,21 +85,17 @@
     .total-val { padding: 8px 10px; text-align: right; font-size: 0.82rem; white-space: nowrap; }
     .total-val.grand { font-size: 0.95rem; font-weight: 700; }
     .gst-input { font-size: 0.82rem; text-align: right; width: 70px; border: none; background: transparent; outline: none; font-family: inherit; }
-    .gst-input:focus { background: rgba(255,255,100,0.3); }
 
-    /* DUE DATE */
     .due-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid #aaa; background: #e8e2d8; }
     .due-cell { padding: 8px 10px; display: flex; gap: 6px; align-items: center; border-right: 1px solid #ccc; font-size: 0.8rem; flex-wrap: wrap; }
     .due-cell:last-child { border-right: none; }
     .due-cell b { font-weight: 700; white-space: nowrap; }
     .due-cell input { font-size: 0.8rem; min-width: 80px; }
 
-    /* FINE PRINT */
     .fine-print { padding: 10px 14px 14px; background: #f0ece5; border-top: 1px solid #ccc; }
     .fine-print p { font-size: 0.65rem; color: #555; line-height: 1.5; margin-bottom: 5px; }
     .fine-print .asterisk-note { font-style: italic; text-align: center; }
 
-    /* MODALS */
     .modal-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px 10px; }
     .modal-box { background: white; border-radius: 6px; width: 100%; max-width: 460px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); margin: auto; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #eee; }
@@ -117,7 +110,6 @@
     .modal-btns { display: flex; gap: 10px; }
     .modal-btn { flex: 1; border: none; padding: 11px; border-radius: 3px; font-family: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; }
 
-    /* HISTORY */
     .history-list { padding: 12px 16px; max-height: 65vh; overflow-y: auto; }
     .history-card { border: 1px solid #eee; border-radius: 4px; padding: 14px; margin-bottom: 10px; background: #fafafa; }
     .history-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
@@ -130,7 +122,7 @@
 
     @media print {
       body { background: white; }
-      .toolbar, .inv-counter, .modal-bg { display: none !important; }
+      .toolbar, .inv-counter, .version-tag, .modal-bg { display: none !important; }
       .app { padding: 0; }
       .invoice-wrap { box-shadow: none; border: none; max-width: 100%; font-size: 12px; }
       input:focus { background: transparent !important; }
@@ -148,11 +140,10 @@
     <button class="btn btn-reset"   onclick="clearAll()">Clear</button>
   </div>
   <div class="inv-counter" id="inv-counter"></div>
-  <div style="font-size:0.65rem;color:#bbb;text-align:center;margin-bottom:6px;">v8.0 — invoice starts at 230000</div>
+  <div class="version-tag">v8.0</div>
 
   <div class="invoice-wrap">
 
-    <!-- HEADER -->
     <div class="header-band">
       <div class="header-tagline">caring for your workplace and the environment</div>
       <div class="header-grid">
@@ -169,7 +160,6 @@
       </div>
     </div>
 
-    <!-- TITLE + INVOICE NO -->
     <div class="title-row">
       <div class="tax-invoice-title">TAX INVOICE</div>
       <div class="invoice-no-block">
@@ -180,7 +170,6 @@
       </div>
     </div>
 
-    <!-- TO -->
     <div class="to-section">
       <div class="to-grid">
         <div class="to-label">To:</div>
@@ -194,11 +183,10 @@
       </div>
     </div>
 
-    <!-- LINE ITEMS -->
     <table class="items-table">
       <thead>
         <tr>
-          <th colspan="2">Date</th>
+          <th>Date</th>
           <th class="price-col">Price</th>
           <th style="width:36px; border:none; background:transparent;"></th>
         </tr>
@@ -206,12 +194,11 @@
       <tbody id="items-body"></tbody>
       <tfoot>
         <tr class="add-row">
-          <td colspan="4"><button class="add-row-btn" onclick="addRow()">+ Add row</button></td>
+          <td colspan="3"><button class="add-row-btn" onclick="addRow()">+ Add row</button></td>
         </tr>
       </tfoot>
     </table>
 
-    <!-- BANK + TOTALS -->
     <div class="bank-totals">
       <div class="bank-section">
         <div class="bank-label">Bank account number for direct credit:</div>
@@ -235,13 +222,11 @@
       </div>
     </div>
 
-    <!-- DUE DATE -->
     <div class="due-row">
       <div class="due-cell"><b>Due Date:</b><input type="text" id="due-date" placeholder="dd/mm/yyyy" /></div>
       <div class="due-cell"><b>Received on:</b><input type="text" id="received" placeholder="dd/mm/yyyy" /></div>
     </div>
 
-    <!-- FINE PRINT -->
     <div class="fine-print">
       <p>All costs and expenses incurred as a result of late or non payment of this invoice shall be payable by you. Any invoice not paid by the due date as shown on this invoice may, at our discretion, incur a $25 per month or 12.5% financing charge, whichever is the greater.</p>
       <p class="asterisk-note">* Cleantastic Franchisees are independent owner-operators.</p>
@@ -251,7 +236,7 @@
 </div>
 
 
-<!-- ===== PAST INVOICES MODAL ===== -->
+<!-- PAST INVOICES MODAL -->
 <div class="modal-bg" id="history-modal">
   <div class="modal-box">
     <div class="modal-header">
@@ -262,8 +247,7 @@
   </div>
 </div>
 
-
-<!-- ===== EMAIL MODAL ===== -->
+<!-- EMAIL MODAL -->
 <div class="modal-bg" id="email-modal">
   <div class="modal-box">
     <div class="modal-header">
@@ -283,7 +267,7 @@
         <label>Message</label>
         <textarea id="email-body" rows="6"></textarea>
       </div>
-      <p class="modal-note">Opens your phone's email app with details pre-filled. Tip: Print/Save as PDF first, then attach it to the email.</p>
+      <p class="modal-note">Opens your phone's email app with details pre-filled. Tip: Print/Save as PDF first, then attach it.</p>
       <div class="modal-btns">
         <button class="modal-btn" style="background:#27ae60;color:white;" onclick="openMailto()">Open Email App</button>
         <button class="modal-btn" style="background:#eee;color:#555;"     onclick="closeEmailModal()">Cancel</button>
@@ -294,82 +278,89 @@
 
 
 <script>
-  const COUNTER_KEY = 'tax_inv_counter';
-  const BIZ_KEY     = 'tax_inv_biz';
-  const HISTORY_KEY = 'inv_history';
-  let rowId = 0;
+  var COUNTER_KEY = 'tax_inv_counter_v8';
+  var BIZ_KEY     = 'tax_inv_biz';
+  var HISTORY_KEY = 'inv_history';
+  var rowId = 0;
 
-  /* ---- INVOICE NUMBER ---- */
-  function getCurrentNo() { return localStorage.getItem(COUNTER_KEY) || '230000'; }
+  /* Always start from 230000 on v8 */
+  (function() {
+    var stored = parseInt(localStorage.getItem(COUNTER_KEY) || '0');
+    if (stored < 230000) {
+      localStorage.setItem(COUNTER_KEY, '230000');
+    }
+  })();
+
+  function getCurrentNo() {
+    return localStorage.getItem(COUNTER_KEY) || '230000';
+  }
   function getNextNo() {
-    const next = parseInt(localStorage.getItem(COUNTER_KEY) || '230000') + 1;
+    var next = parseInt(localStorage.getItem(COUNTER_KEY) || '230000') + 1;
     localStorage.setItem(COUNTER_KEY, String(next));
     return String(next);
   }
   function updateCounter() {
     document.getElementById('inv-counter').textContent =
-      'Invoice #' + document.getElementById('inv-no').value + '  ·  auto-increments on New Invoice';
+      'Invoice #' + document.getElementById('inv-no').value + '  ·  auto-increments on + New';
   }
 
-  /* ---- ROWS ---- */
-  function addRow(date1, date2, price, notes) {
-    date1 = date1 || ''; date2 = date2 || ''; price = price || ''; notes = notes || '';
-    const id = ++rowId;
-    const noteId = ++rowId;
-    const tr = document.createElement('tr');
+  function addRow(date, price, notes) {
+    date  = date  || '';
+    price = price || '';
+    notes = notes || '';
+    var id = ++rowId;
+
+    // Date + Price row
+    var tr = document.createElement('tr');
     tr.id = 'row-' + id;
     tr.innerHTML =
-      '<td><input type="date" oninput="recalc()" style="min-height:36px;width:100%;padding:6px 4px;font-size:0.78rem;" /></td>' +
-      '<td><input type="date" oninput="recalc()" style="min-height:36px;width:100%;padding:6px 4px;font-size:0.78rem;" /></td>' +
-      '<td class="price-cell"><input type="number" step="0.01" oninput="recalc()" style="min-height:36px;" /></td>' +
-      '<td style="border:none;background:transparent;padding:0;" rowspan="2">' +
-        '<button class="remove-row-btn" onclick="removePair(' + id + ',' + noteId + ')">×</button>' +
-      '</td>';
-    const trNote = document.createElement('tr');
-    trNote.id = 'row-' + noteId;
-    trNote.innerHTML =
-      '<td colspan="3" style="padding:0;border-top:none;">' +
-        '<input type="text" placeholder="Notes / extra work (optional)" style="min-height:30px;padding:6px 8px;font-size:0.78rem;color:#888;border-top:1px dashed #ddd;width:100%;" />' +
+      '<td><input type="date" oninput="recalc()" style="min-height:36px;width:100%;padding:8px 4px;" /></td>' +
+      '<td style="width:90px;"><input type="number" step="0.01" oninput="recalc()" style="min-height:36px;text-align:right;padding:8px;" /></td>' +
+      '<td style="border:none;background:transparent;padding:0;">' +
+        '<button class="remove-row-btn" onclick="removeRow(' + id + ')">×</button>' +
       '</td>';
     document.getElementById('items-body').appendChild(tr);
-    document.getElementById('items-body').appendChild(trNote);
-    const inputs = tr.querySelectorAll('input');
-    inputs[0].value = date1;
-    inputs[1].value = date2;
-    inputs[2].value = price;
-    trNote.querySelector('input').value = notes;
-    recalc();
-  }
+    tr.querySelectorAll('input')[0].value = date;
+    tr.querySelectorAll('input')[1].value = price;
 
-  function removePair(id1, id2) {
-    [id1, id2].forEach(function(id) {
-      const el = document.getElementById('row-' + id);
-      if (el) el.remove();
-    });
+    // Notes row
+    var trn = document.createElement('tr');
+    trn.id = 'notes-' + id;
+    trn.className = 'notes-row';
+    trn.innerHTML =
+      '<td colspan="2" style="border-top:none;"><input type="text" placeholder="Notes / extra work..." style="min-height:30px;padding:6px 8px;font-size:0.78rem;color:#888;font-style:italic;" /></td>' +
+      '<td style="border:none;background:transparent;"></td>';
+    document.getElementById('items-body').appendChild(trn);
+    trn.querySelector('input').value = notes;
+
     recalc();
   }
 
   function removeRow(id) {
-    const el = document.getElementById('row-' + id);
-    if (el) { el.remove(); recalc(); }
+    var tr  = document.getElementById('row-'   + id);
+    var trn = document.getElementById('notes-' + id);
+    if (tr)  tr.remove();
+    if (trn) trn.remove();
+    recalc();
   }
 
-  /* ---- CALCULATE ---- */
-  function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function fmt(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
   function recalc() {
-    let subtotal = 0;
-    document.querySelectorAll('#items-body td.price-cell input').forEach(function(inp) {
+    var subtotal = 0;
+    document.querySelectorAll('#items-body tr:not(.notes-row) td:nth-child(2) input').forEach(function(inp) {
       subtotal += parseFloat(inp.value) || 0;
     });
-    const gstInp = document.getElementById('gst-input');
-    const gst = gstInp.value !== '' ? (parseFloat(gstInp.value) || 0) : subtotal * 0.1;
+    var gstInp = document.getElementById('gst-input');
+    var gst = gstInp.value !== '' ? (parseFloat(gstInp.value) || 0) : subtotal * 0.1;
     gstInp.placeholder = gst > 0 ? gst.toFixed(2) : '0.00';
     document.getElementById('subtotal-val').textContent = fmt(subtotal);
     document.getElementById('total-val').textContent    = fmt(subtotal + gst);
     saveBiz();
   }
 
-  /* ---- BIZ INFO ---- */
   function saveBiz() {
     try {
       localStorage.setItem(BIZ_KEY, JSON.stringify({
@@ -382,6 +373,7 @@
       }));
     } catch(e) {}
   }
+
   function loadBiz() {
     try {
       var b = JSON.parse(localStorage.getItem(BIZ_KEY) || '{}');
@@ -394,39 +386,35 @@
     } catch(e) {}
   }
 
-  /* ---- SNAPSHOT ---- */
   function getSnapshot() {
     var rows = [];
-    var trs = document.querySelectorAll('#items-body tr');
-    for (var i = 0; i < trs.length; i += 2) {
-      var inp = trs[i].querySelectorAll('input');
-      var noteInp = trs[i+1] ? trs[i+1].querySelector('input') : null;
-      if (inp.length >= 3) rows.push({
-        date1: inp[0].value,
-        date2: inp[1].value,
-        price: inp[2].value,
-        notes: noteInp ? noteInp.value : ''
-      });
-    }
+    document.querySelectorAll('#items-body tr:not(.notes-row)').forEach(function(tr) {
+      var id = tr.id.replace('row-', '');
+      var inp  = tr.querySelectorAll('input');
+      var ntr  = document.getElementById('notes-' + id);
+      var note = ntr ? ntr.querySelector('input').value : '';
+      if (inp.length >= 2) rows.push({ date: inp[0].value, price: inp[1].value, notes: note });
+    });
     return {
-      invNo: document.getElementById('inv-no').value,
-      toName: document.getElementById('to-name').value,
-      toAddr1: document.getElementById('to-addr1').value,
-      toAddr2: document.getElementById('to-addr2').value,
-      toAbn: document.getElementById('to-abn').value,
-      gst: document.getElementById('gst-input').value,
-      dueDate: document.getElementById('due-date').value,
+      invNo:    document.getElementById('inv-no').value,
+      toName:   document.getElementById('to-name').value,
+      toAddr1:  document.getElementById('to-addr1').value,
+      toAddr2:  document.getElementById('to-addr2').value,
+      toAbn:    document.getElementById('to-abn').value,
+      gst:      document.getElementById('gst-input').value,
+      dueDate:  document.getElementById('due-date').value,
       received: document.getElementById('received').value,
       subtotal: document.getElementById('subtotal-val').textContent,
-      total: document.getElementById('total-val').textContent,
-      rows: rows,
-      savedAt: new Date().toLocaleDateString('en-AU'),
+      total:    document.getElementById('total-val').textContent,
+      rows:     rows,
+      savedAt:  new Date().toLocaleDateString('en-AU'),
     };
   }
+
   function saveCurrentInvoice() {
     try {
       var snap = getSnapshot();
-      if (!snap.toName && snap.rows.every(function(r) { return !r.desc && !r.price; })) return;
+      if (!snap.toName && snap.rows.every(function(r) { return !r.date && !r.price; })) return;
       var all = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
       var idx = all.findIndex(function(i) { return i.invNo === snap.invNo; });
       if (idx >= 0) all[idx] = snap; else all.unshift(snap);
@@ -434,27 +422,27 @@
     } catch(e) {}
   }
 
-  /* ---- NEW INVOICE ---- */
   function clearForm() {
-    document.getElementById('to-name').value = '';
+    document.getElementById('to-name').value  = '';
     document.getElementById('to-addr1').value = '';
     document.getElementById('to-addr2').value = '';
-    document.getElementById('to-abn').value = '';
-    document.getElementById('gst-input').value = '';
+    document.getElementById('to-abn').value   = '';
+    document.getElementById('gst-input').value= '';
     document.getElementById('due-date').value = '';
     document.getElementById('received').value = '';
     document.getElementById('items-body').innerHTML = '';
-    for (var i = 0; i < 6; i++) addRow();
+    for (var i = 0; i < 5; i++) addRow();
     recalc();
   }
+
   function newInvoice() {
     document.getElementById('inv-no').value = getNextNo();
     clearForm();
     updateCounter();
   }
+
   function saveAndNew() { saveCurrentInvoice(); newInvoice(); }
 
-  /* ---- CLEAR ALL ---- */
   function clearAll() {
     if (!confirm('Clear everything including your business details?')) return;
     ['biz-name','biz-addr1','biz-addr2','biz-phone','biz-abn','bank'].forEach(function(id) {
@@ -463,19 +451,18 @@
     clearForm();
   }
 
-  /* ---- HISTORY ---- */
   function openHistory() {
     var all = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
     var list = document.getElementById('history-list');
     if (all.length === 0) {
-      list.innerHTML = '<p style="color:#aaa;text-align:center;padding:30px;font-size:0.85rem;">No saved invoices yet.<br>Tap &quot;+ New&quot; to save the current one first.</p>';
+      list.innerHTML = '<p style="color:#aaa;text-align:center;padding:30px;font-size:0.85rem;">No saved invoices yet.<br>Tap &quot;+ New&quot; to save the current one.</p>';
     } else {
       list.innerHTML = all.map(function(inv, i) {
         return '<div class="history-card">' +
           '<div class="history-card-top">' +
             '<div><span class="history-inv-no">Invoice #' + inv.invNo + '</span>' +
             '<span class="history-date">' + (inv.savedAt || '') + '</span></div>' +
-            '<button class="del-btn" onclick="deleteInvoice(' + i + ')" title="Delete">🗑</button>' +
+            '<button class="del-btn" onclick="deleteInvoice(' + i + ')">🗑</button>' +
           '</div>' +
           '<div class="history-detail"><b>To:</b> ' + (inv.toName || '—') + '</div>' +
           '<div class="history-detail"><b>Total:</b> ' + inv.total + ' &nbsp;|&nbsp; <b>Due:</b> ' + (inv.dueDate || '—') + '</div>' +
@@ -488,6 +475,7 @@
     }
     document.getElementById('history-modal').style.display = 'flex';
   }
+
   function closeHistory() { document.getElementById('history-modal').style.display = 'none'; }
 
   function loadInvoice(i) {
@@ -502,10 +490,11 @@
     document.getElementById('due-date').value  = inv.dueDate || '';
     document.getElementById('received').value  = inv.received|| '';
     document.getElementById('items-body').innerHTML = '';
-    (inv.rows || []).forEach(function(r) { addRow(r.date1, r.date2, r.price, r.notes); });
-    while (document.querySelectorAll('#items-body tr').length < 3) addRow();
+    (inv.rows || []).forEach(function(r) { addRow(r.date, r.price, r.notes); });
+    while (document.querySelectorAll('#items-body tr:not(.notes-row)').length < 3) addRow();
     updateCounter(); recalc(); closeHistory();
   }
+
   function deleteInvoice(i) {
     if (!confirm('Delete this invoice from history?')) return;
     var all = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
@@ -513,9 +502,9 @@
     localStorage.setItem(HISTORY_KEY, JSON.stringify(all));
     openHistory();
   }
+
   function printInvoice(i) { loadInvoice(i); setTimeout(function() { window.print(); }, 500); }
 
-  /* ---- EMAIL ---- */
   function openEmailModal() {
     var invNo   = document.getElementById('inv-no').value;
     var bizName = document.getElementById('biz-name').value || 'Us';
@@ -527,13 +516,15 @@
     document.getElementById('email-subject').value = 'Tax Invoice ' + invNo + ' from ' + bizName;
     document.getElementById('email-body').value    =
       'Dear ' + client + ',\n\n' +
-      'Please find attached Tax Invoice ' + invNo + ' for ' + total + (due ? ', due ' + due : '') + '.\n\n' +
+      'Please find attached Tax Invoice ' + invNo + ' for ' + total +
+      (due ? ', due ' + due : '') + '.\n\n' +
       'Please make payment to the bank account details shown on the invoice.\n\n' +
-      'Thank you for your business.\n\n' +
-      'Kind regards,\n' + bizName + (phone ? '\n' + phone : '');
+      'Thank you for your business.\n\nKind regards,\n' + bizName + (phone ? '\n' + phone : '');
     document.getElementById('email-modal').style.display = 'flex';
   }
+
   function closeEmailModal() { document.getElementById('email-modal').style.display = 'none'; }
+
   function openMailto() {
     var to      = encodeURIComponent(document.getElementById('email-to').value);
     var subject = encodeURIComponent(document.getElementById('email-subject').value);
@@ -542,23 +533,17 @@
     closeEmailModal();
   }
 
-  /* ---- MODAL BACKDROP CLOSE ---- */
   document.getElementById('history-modal').addEventListener('click', function(e) { if (e.target === this) closeHistory(); });
   document.getElementById('email-modal').addEventListener('click',   function(e) { if (e.target === this) closeEmailModal(); });
 
-  /* ---- AUTO-SAVE BIZ ---- */
   ['biz-name','biz-addr1','biz-addr2','biz-phone','biz-abn','bank'].forEach(function(id) {
     document.getElementById(id).addEventListener('input', saveBiz);
   });
 
-  /* ---- INIT ---- */
-  // Force counter to start at 230000 if it's lower or not set
-  var storedNo = parseInt(localStorage.getItem(COUNTER_KEY) || '0');
-  if (storedNo < 230000) { localStorage.setItem(COUNTER_KEY, '230000'); }
-
+  /* INIT */
   document.getElementById('inv-no').value = getCurrentNo();
   loadBiz();
-  for (var i = 0; i < 6; i++) addRow();
+  for (var i = 0; i < 5; i++) addRow();
   updateCounter();
   recalc();
 </script>
