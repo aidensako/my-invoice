@@ -154,7 +154,7 @@
     <button class="btn btn-reset"   onclick="clearAll()">Clear</button>
   </div>
   <div class="inv-counter" id="inv-counter"></div>
-  <div class="version-tag">v10.0</div>
+  <div class="version-tag">v11.0 — saved clients</div>
 
   <div class="invoice-wrap">
 
@@ -185,6 +185,13 @@
     </div>
 
     <div class="to-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;">Bill To</span>
+        <div style="display:flex;gap:6px;">
+          <button onclick="openClients()" style="background:#2471a3;color:white;border:none;border-radius:3px;font-family:inherit;font-size:0.7rem;font-weight:700;padding:5px 10px;cursor:pointer;letter-spacing:1px;">📋 Saved Clients</button>
+          <button onclick="saveClient()" style="background:#27ae60;color:white;border:none;border-radius:3px;font-family:inherit;font-size:0.7rem;font-weight:700;padding:5px 10px;cursor:pointer;letter-spacing:1px;">+ Save Client</button>
+        </div>
+      </div>
       <div class="to-grid">
         <div class="to-label">To:</div>
         <div class="to-value"><input type="text" id="to-name" placeholder="Client / Company name" /></div>
@@ -252,6 +259,17 @@
 </div>
 
 
+<!-- SAVED CLIENTS MODAL -->
+<div class="modal-bg" id="clients-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>📋 Saved Clients</h2>
+      <button class="modal-close" onclick="closeClients()">×</button>
+    </div>
+    <div class="history-list" id="clients-list"></div>
+  </div>
+</div>
+
 <!-- PAST INVOICES MODAL -->
 <div class="modal-bg" id="history-modal">
   <div class="modal-box">
@@ -294,21 +312,21 @@
 
 
 <script>
-  var COUNTER_KEY = 'tax_inv_counter_v10';
+  var COUNTER_KEY = 'tax_inv_counter_v11';
   var BIZ_KEY     = 'tax_inv_biz';
   var HISTORY_KEY = 'inv_history';
   var rowId = 0;
 
-  /* Always start from 230000 */
+  /* Always start from 300004 */
   (function() {
-    var stored = parseInt(localStorage.getItem(COUNTER_KEY) || '0');
-    if (stored < 230000) localStorage.setItem(COUNTER_KEY, '230000');
+    var stored = parseInt(localStorage.getItem('tax_inv_counter_v11') || '0');
+    if (stored < 300004) localStorage.setItem('tax_inv_counter_v11', '300004');
   })();
 
-  function getCurrentNo() { return localStorage.getItem(COUNTER_KEY) || '230000'; }
+  function getCurrentNo() { return localStorage.getItem('tax_inv_counter_v11') || '300004'; }
   function getNextNo() {
-    var next = parseInt(localStorage.getItem(COUNTER_KEY) || '230000') + 1;
-    localStorage.setItem(COUNTER_KEY, String(next));
+    var next = parseInt(localStorage.getItem('tax_inv_counter_v11') || '300004') + 1;
+    localStorage.setItem('tax_inv_counter_v11', String(next));
     return String(next);
   }
   function updateCounter() {
@@ -545,7 +563,73 @@
     closeEmailModal();
   }
 
-  document.getElementById('history-modal').addEventListener('click', function(e) { if (e.target === this) closeHistory(); });
+  var CLIENTS_KEY = 'inv_clients';
+
+  function saveClient() {
+    var name  = document.getElementById('to-name').value.trim();
+    var addr1 = document.getElementById('to-addr1').value.trim();
+    var addr2 = document.getElementById('to-addr2').value.trim();
+    var abn   = document.getElementById('to-abn').value.trim();
+    if (!name) { alert('Please enter a client name first.'); return; }
+    var all = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
+    var idx = all.findIndex(function(c) { return c.name === name; });
+    var client = { name: name, addr1: addr1, addr2: addr2, abn: abn };
+    if (idx >= 0) {
+      if (!confirm('Update saved details for "' + name + '"?')) return;
+      all[idx] = client;
+    } else {
+      all.push(client);
+    }
+    localStorage.setItem(CLIENTS_KEY, JSON.stringify(all));
+    alert('"' + name + '" saved to your client list!');
+  }
+
+  function openClients() {
+    var all = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
+    var list = document.getElementById('clients-list');
+    if (all.length === 0) {
+      list.innerHTML = '<p style="color:#aaa;text-align:center;padding:30px;font-size:0.85rem;">No saved clients yet.<br>Fill in the client details then tap &quot;+ Save Client&quot;.</p>';
+    } else {
+      list.innerHTML = all.map(function(c, i) {
+        return '<div class="history-card">' +
+          '<div class="history-card-top">' +
+            '<div><span class="history-inv-no" style="font-size:0.95rem;">' + c.name + '</span></div>' +
+            '<button class="del-btn" onclick="deleteClient(' + i + ')" title="Delete">🗑</button>' +
+          '</div>' +
+          (c.addr1 ? '<div class="history-detail">' + c.addr1 + '</div>' : '') +
+          (c.addr2 ? '<div class="history-detail">' + c.addr2 + '</div>' : '') +
+          (c.abn   ? '<div class="history-detail"><b>ABN:</b> ' + c.abn + '</div>' : '') +
+          '<div class="history-actions">' +
+            '<button class="history-btn" style="background:#2471a3;" onclick="loadClient(' + i + ')">Use This Client</button>' +
+          '</div></div>';
+      }).join('');
+    }
+    document.getElementById('clients-modal').style.display = 'flex';
+  }
+
+  function closeClients() { document.getElementById('clients-modal').style.display = 'none'; }
+
+  function loadClient(i) {
+    var all = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
+    var c = all[i]; if (!c) return;
+    document.getElementById('to-name').value  = c.name  || '';
+    document.getElementById('to-addr1').value = c.addr1 || '';
+    document.getElementById('to-addr2').value = c.addr2 || '';
+    document.getElementById('to-abn').value   = c.abn   || '';
+    closeClients();
+  }
+
+  function deleteClient(i) {
+    var all = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
+    if (!confirm('Delete "' + all[i].name + '" from saved clients?')) return;
+    all.splice(i, 1);
+    localStorage.setItem(CLIENTS_KEY, JSON.stringify(all));
+    openClients();
+  }
+
+  document.getElementById('clients-modal').addEventListener('click', function(e) { if (e.target === this) closeClients(); });
+
+
   document.getElementById('email-modal').addEventListener('click',   function(e) { if (e.target === this) closeEmailModal(); });
   ['biz-name','biz-addr1','biz-addr2','biz-phone','biz-abn','bank'].forEach(function(id) {
     document.getElementById(id).addEventListener('input', saveBiz);
