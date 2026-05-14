@@ -302,12 +302,12 @@
   /* Always start from 230000 */
   (function() {
     var stored = parseInt(localStorage.getItem(COUNTER_KEY) || '0');
-    if (stored < 230000) localStorage.setItem(COUNTER_KEY, '230000');
+    if (stored <300004) localStorage.setItem(COUNTER_KEY, '300004');
   })();
 
-  function getCurrentNo() { return localStorage.getItem(COUNTER_KEY) || '230000'; }
+  function getCurrentNo() { return localStorage.getItem(COUNTER_KEY) || '300004'; }
   function getNextNo() {
-    var next = parseInt(localStorage.getItem(COUNTER_KEY) || '230000') + 1;
+    var next = parseInt(localStorage.getItem(COUNTER_KEY) || '300004') + 1;
     localStorage.setItem(COUNTER_KEY, String(next));
     return String(next);
   }
