@@ -302,7 +302,7 @@
   /* Always start from 230000 */
   (function() {
     var stored = parseInt(localStorage.getItem(COUNTER_KEY) || '0');
-    if (stored <300004) localStorage.setItem(COUNTER_KEY, '300004');
+    if (stored < 300004) localStorage.setItem(COUNTER_KEY, '300004');
   })();
 
   function getCurrentNo() { return localStorage.getItem(COUNTER_KEY) || '300004'; }
